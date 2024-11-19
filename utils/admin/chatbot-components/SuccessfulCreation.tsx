@@ -64,31 +64,8 @@ export default function SuccessfulCreation() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4">
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#128C7E] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
-            prefetch={false}
-          >
-            <PhoneIcon className="w-5 h-5 mr-2" />
-            WhatsApp
-          </Link>
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center rounded-md bg-[#E1306C] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#C13584] focus:outline-none focus:ring-2 focus:ring-[#E1306C] focus:ring-offset-2"
-            prefetch={false}
-          >
-            <InstagramIcon className="w-5 h-5 mr-2" />
-            Instagram
-          </Link>
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center rounded-md bg-[#0088CC] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#007BB5] focus:outline-none focus:ring-2 focus:ring-[#0088CC] focus:ring-offset-2"
-            prefetch={false}
-          >
-            <TextIcon className="w-5 h-5 mr-2" />
-            Telegram
-          </Link>
+        <div className="grid grid-cols-4 items-center justify-center gap-4">
+          
           <Link
             href="#"
             className="inline-flex items-center justify-center rounded-md bg-[#CB3837] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#A30000] focus:outline-none focus:ring-2 focus:ring-[#CB3837] focus:ring-offset-2"

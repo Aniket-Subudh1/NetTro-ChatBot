@@ -102,7 +102,7 @@ export default function ChatbotHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="p-6 bg-muted rounded-lg hover:bg-muted-foreground/5 transition-colors">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Customer Support</h3>
+                <h3 className="text-lg font-semibold">Network Troubleshooter Support</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon">
                     <FilePenIcon className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function ChatbotHome() {
             </Card>
             <Card className="p-6 bg-muted rounded-lg hover:bg-muted-foreground/5 transition-colors">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Sales Assistant</h3>
+                <h3 className="text-lg font-semibold">Security Issue</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon">
                     <FilePenIcon className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function ChatbotHome() {
             </Card>
             <Card className="p-6 bg-muted rounded-lg hover:bg-muted-foreground/5 transition-colors">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">HR Assistant</h3>
+                <h3 className="text-lg font-semibold">Website DOM Bot</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon">
                     <FilePenIcon className="w-4 h-4" />
@@ -186,7 +186,7 @@ export default function ChatbotHome() {
             </Card>
             <Card className="p-6 bg-muted rounded-lg hover:bg-muted-foreground/5 transition-colors">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Museum Chatbot</h3>
+                <h3 className="text-lg font-semibold">Chatbot</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon">
                     <FilePenIcon className="w-4 h-4" />
@@ -214,7 +214,7 @@ export default function ChatbotHome() {
             </Card>
             <Card className="p-6 bg-muted rounded-lg hover:bg-muted-foreground/5 transition-colors">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Cinema Hall Chatbot</h3>
+                <h3 className="text-lg font-semibold"> Chatbot</h3>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon">
                     <FilePenIcon className="w-4 h-4" />
@@ -313,15 +313,15 @@ export default function ChatbotHome() {
               <CardContent className="flex flex-col items-center gap-2">
                 <div
                   className={`border cursor-pointer rounded-md p-2 flex flex-col items-center gap-2 ${
-                    selectedTemplate === "restaurant" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
+                    selectedTemplate === "Network Trouble Shooter" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
                   }`}
-                  onClick={() => handleTemplateSelect("restaurant")}
+                  onClick={() => handleTemplateSelect("Network Trouble Shooter")}
                 >
                   <BotIcon className="w-10 h-10" />
-                  <div className="font-medium">Restaurant Chatbot</div>
+                  <div className="font-medium">Network Trouble Shooter Chatbot</div>
                   <div className="text-sm text-muted-foreground">$9.99/month</div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("restaurant")}>
+                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("Network Trouble Shooter")}>
                   Use Theme
                 </Button>
               </CardContent>
@@ -330,15 +330,15 @@ export default function ChatbotHome() {
               <CardContent className="flex flex-col items-center gap-2">
                 <div
                   className={`border cursor-pointer rounded-md p-2 flex flex-col items-center gap-2 ${
-                    selectedTemplate === "cinema" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
+                    selectedTemplate === "Security Issue" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
                   }`}
-                  onClick={() => handleTemplateSelect("cinema")}
+                  onClick={() => handleTemplateSelect("Security Issue")}
                 >
                   <BotIcon className="w-10 h-10" />
-                  <div className="font-medium">Cinema Chatbot</div>
+                  <div className="font-medium">Security Issue Chatbot</div>
                   <div className="text-sm text-muted-foreground">$12.99/month</div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("cinema")}>
+                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("Security Issue")}>
                 Use Theme
                 </Button>
               </CardContent>
@@ -347,15 +347,15 @@ export default function ChatbotHome() {
               <CardContent className="flex flex-col items-center gap-2">
                 <div
                   className={`border cursor-pointer rounded-md p-2 flex flex-col items-center gap-2 ${
-                    selectedTemplate === "museum" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
+                    selectedTemplate === "Security Threat" ? "bg-muted" : "hover:bg-muted/30 transition-colors"
                   }`}
-                  onClick={() => handleTemplateSelect("museum")}
+                  onClick={() => handleTemplateSelect("Security Threat")}
                 >
                   <BotIcon className="w-10 h-10" />
-                  <div className="font-medium">Museum Chatbot</div>
+                  <div className="font-medium">Security Threat Chatbot</div>
                   <div className="text-sm text-muted-foreground">$14.99/month</div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("museum")}>
+                <Button variant="outline" size="sm" onClick={() => handleTemplateSelect("Security Threat")}>
                 Use Theme
                 </Button>
               </CardContent>
@@ -425,7 +425,7 @@ export default function ChatbotHome() {
                   onClick={() => handleThemeSelect("Chatbot for F&Q and ticket booking")}
                 >
                   <LayoutTemplate className="w-10 h-10" />
-                  <div className="font-medium">{selectedTemplate} Chatbot for F&Q and ticket booking</div>
+                  <div className="font-medium">{selectedTemplate} Chatbot for F&Q and Problem Solving</div>
                   <div className="text-sm text-muted-foreground">Advanced & Customizable</div>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => handleThemeSelect("Chatbot for F&Q and ticket booking")}>
@@ -442,7 +442,7 @@ export default function ChatbotHome() {
                   onClick={() => handleThemeSelect("Chatbot for F&Q , ticket booking and support")}
                 >
                  <LayoutTemplate className="w-10 h-10" />
-                 <div className="font-medium">{selectedTemplate} Chatbot for F&Q , ticket booking and support</div>
+                 <div className="font-medium">{selectedTemplate} Chatbot for F&Q , Problem Solving and support</div>
                   <div className="text-sm text-muted-foreground">Advanced & Customizable</div>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => handleThemeSelect("Chatbot for F&Q , ticket booking and support")}>
@@ -481,7 +481,7 @@ export default function ChatbotHome() {
         <Dialog open={openEditModal} >
       <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>Museum Ticket Booking</DialogTitle>
+          <DialogTitle>Network Trouble Shooter</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">

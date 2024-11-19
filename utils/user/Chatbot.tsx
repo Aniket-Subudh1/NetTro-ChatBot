@@ -10,13 +10,16 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import Link from "next/link"
+import { cn } from "@/lib/utils";
+import { FaSignal } from "react-icons/fa";
 import { set } from "date-fns";
 const Chatbot = () => {
+ 
   const [isOpen, setIsOpen] = useState(false);
   const [mainmenu,setMainment] = useState(false);
   const [loading1,setLoading1] = useState(false);
@@ -24,9 +27,13 @@ const Chatbot = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
-  const [tickets, setTickets] = useState("");
-  const [openConfirmation,setOpenConfirmation] = useState(false);
-//@ts-ignore
+  
+  const [ping, setPing] = useState<number | null>(null);
+  const [uploadSpeed, setUploadSpeed] = useState<string>("-");
+  const [downloadSpeed, setDownloadSpeed] = useState<string>("-");
+  const [networkStatus, setNetworkStatus] = useState<string>("Checking...");
+
+  //@ts-ignore
   const handleNameChange = (e) => setName(e.target.value);
   //@ts-ignore
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -90,7 +97,7 @@ const Chatbot = () => {
         const updatedChat = [
           ...chat,
           { name: "You", type: "user", message: usermessage },
-          { name: "NXT-AI", type: "bot", message: result.response.text() },
+          { name: "NetTro-AI", type: "bot", message: result.response.text() },
         ];
 //@ts-ignore
         setChat(updatedChat);
@@ -107,7 +114,7 @@ const Chatbot = () => {
   const handleChange = (e:InputEvent) => {
     setUserMessage(e.target.value);
   };
-//start chat with ai 
+
 const StartChat = ()=>{
     setLoading1(true);
     setMainment(false);
@@ -116,15 +123,81 @@ const StartChat = ()=>{
         setLoading1(false);
         //@ts-ignore
         setChat([...chat,   {
-            name: "radsb",
+            name: "NetTro",
             type: "bot",
             message:
-              "Hello! I'm a ChatBot created by Radsab. How can I help you today?",
+              "Hello! I'm a ChatBot created by NetTro. How can I help you today?",
           },])
     },1000)
    
 
 }
+
+
+
+
+const calculateNetworkMetrics = async () => {
+  try {
+    const measuredPing = await measurePing();
+    setPing(measuredPing);
+
+    const downloadSpeedMbps = await measureDownloadSpeed();
+    setDownloadSpeed(`${downloadSpeedMbps} Mbps`);
+
+    const simulatedUploadSpeed = simulateUploadSpeed();
+    setUploadSpeed(`${simulatedUploadSpeed} Mbps`);
+
+    let measuredStatus = "Excellent";
+    if (measuredPing > 100 || parseFloat(downloadSpeedMbps) < 2) {
+      measuredStatus = "Poor";
+    } else if (measuredPing > 50 || parseFloat(downloadSpeedMbps) < 5) {
+      measuredStatus = "Good";
+    }
+    setNetworkStatus(measuredStatus);
+  } catch (error) {
+    console.error("Error measuring network metrics:", error);
+    setNetworkStatus("Error");
+  }
+};
+
+const measurePing = async () => {
+  const startPing = performance.now();
+  await fetch("/ping", { cache: "no-store" });
+  const endPing = performance.now();
+  return Math.round(endPing - startPing);
+};
+
+const measureDownloadSpeed = async () => {
+  const downloadSizeInBytes = 1024 * 1024;
+  const downloadStartTime = performance.now();
+  await fetch("/1MB.test", { cache: "no-store" });
+  const downloadEndTime = performance.now();
+  const downloadTime = (downloadEndTime - downloadStartTime) / 1000;
+  const speedMbps = (
+    (downloadSizeInBytes * 8) /
+    (downloadTime * 1000000)
+  ).toFixed(2);
+  return speedMbps;
+};
+
+const simulateUploadSpeed = () => {
+  return (Math.random() * 10 + 1).toFixed(2);
+};
+
+useEffect(() => {
+  const showDialog = () => {
+    calculateNetworkMetrics();
+   
+  };
+
+  showDialog();
+  const interval = setInterval(showDialog, 5 * 60000); 
+
+  return () => clearInterval(interval);
+}, []);
+
+
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if (usermessage.trim() === "") return;
@@ -141,102 +214,19 @@ const StartChat = ()=>{
     setChat([...chat, { name: "You", type: "user", message: usermessage }])
     console.log(chat)
     run();
-    // setUserMessage("");
+  
     console.log(usermessage);
     toast.success(usermessage);
   };
 
-//   const chatEndRef = useRef(null);
-//   useEffect(() => {
-//     scrollToBottom();
-//   }, [chat]);
 
-//   const scrollToBottom = () => {
-//     if (chatEndRef.current) {
-//       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-//     }
-//   };
-// ;
-const BookTicket=()=>{
-setMainment(false);
-setLoading1(true);
-setTimeout(()=>{
-    setOpenTicket(true);
-    setLoading1(false);
-},1000)
 
-}
-//ticket book logic here
-const handleTicketBook=(e:any)=>{
-  e.preventDefault();
-  const formData = { name, email, date, tickets };
-  console.log("Form Data Submitted: ", formData);
-  if(name==""||email==""||date==null||tickets==""){
- toast.error("Please enter all the details correctly .")
- return;
-  }
- setLoading(true);
- setOpenTicket(false);
- setTimeout(()=>{
-setOpenConfirmation(true);
-setLoading(false);
- },500)
-}
 
-const PaymentDo = async(e:any)=>{
-  setLoading(true);
-  let amount = 99;
-  const data = { amount,email,name};
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/precheckout`,
-    {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }
-  );
-
-  const r = await response.json();
-  setLoading(false);
-  if(r.success){
-  var options =  {
-    key: `${process.env.NEXT_PUBLIC_KEY_ID}`,
-     // Enter the Key ID generated from the Dashboard
-    amount: r.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    currency: "INR",
-    name: `RadSab TicketBooking For Museum`, //your business name
-    description: `RadSab ticket booking for museum book your ticket now ."`,
-    image: "/logo.png",
-    order_id: r.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    callback_url: `${process.env.NEXT_PUBLIC_HOST}/api/postcheckout`,
-    prefill: {
-      //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-      name: name, //your customer's name
-      email: email,
-    },
-    notes: {
-      address: "Razorpay Corporate Office",
-    },
-    theme: {
-      color: "#FD0872",
-    },
-  };
-  //@ts-ignore
-  var rzp1 = new window.Razorpay(options);
-  await rzp1.open();
-  e.preventDefault();
-}
-else{
-    toast.error('Error in Payment');
-}
-}
 
   return (
     <div>
         <Toaster position="top-center"/>
-      {/* Button to open/close chatbot */}
+      
       <button
         className="fixed bottom-4 right-4 inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 border rounded-full w-16 h-16 bg-black hover:bg-gray-700 m-0 cursor-pointer border-gray-200 bg-none p-0 normal-case leading-5 hover:text-gray-900"
         type="button"
@@ -263,65 +253,73 @@ else{
         </svg>
       </button>
 
-      {/* Chatbot window with animation */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 100 }} // Start position
-            animate={{ opacity: 1, y: 0 }} // End position
-            exit={{ opacity: 0, y: 800 }} // Exit position
-            transition={{ duration: 0.5}} // Animation duration
-            style={{ boxShadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.05)" }}
-            className="fixed bottom-[calc(4rem+1.5rem)] right-0 mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-full sm:w-[440px] lg:max-h-[83vh]  md:max-h-[83vh] max-h-[80vh] overflow-hidden"
-          >
+         <motion.div
+         initial={{ opacity: 0, y: 100 }}
+         animate={{ opacity: 1, y: 0 }}
+         exit={{ opacity: 0, y: 800 }}
+         transition={{ duration: 0.5 }}
+         className="fixed bottom-[calc(4rem+1.5rem)] right-0 mr-4  bg-white p-6 rounded-lg border border-[#e5e7eb] w-full sm:w-[440px] lg:max-h-[83vh] md:max-h-[83vh] max-h-[80vh] flex flex-col"
+       >
+       
             {/* Heading */}
             <div className="flex flex-col space-y-1.5 pb-6">
               <h2 className="font-semibold text-lg tracking-tight">Chatbot</h2>
-              <p className="text-sm text-[#6b7280] leading-3">Powered by Radsab Bot</p>
+              <p className="text-sm text-[#6b7280] leading-3">Powered by NetTro</p>
             </div>
+            <div className="p-6">
+      <div className="mb-4 p-4 bg-gray-100 rounded-lg flex items-center">
+        {/* Tower Icon */}
+        <FaSignal
+          className={cn(
+            "mr-2 w-6 h-6",
+            networkStatus === "Excellent" && "text-green-500",
+            networkStatus === "Good" && "text-yellow-500",
+            networkStatus === "Poor" && "text-red-500",
+            networkStatus === "Error" && "text-gray-500"
+          )}
+        />
+        <div>
+          <h3 className="text-sm font-semibold text-gray-600">Network Status</h3>
+          <p className="text-sm">
+            Ping: {ping !== null ? `${ping} ms` : "Loading..."}
+          </p>
+          <p className="text-sm">Upload Speed: {uploadSpeed}</p>
+          <p className="text-sm">Download Speed: {downloadSpeed}</p>
+          <p
+            className={cn(
+              "text-sm font-medium",
+              networkStatus === "Excellent" && "text-green-500",
+              networkStatus === "Good" && "text-yellow-500",
+              networkStatus === "Poor" && "text-red-500",
+              networkStatus === "Error" && "text-gray-500"
+            )}
+          >
+            Status: {networkStatus}
+          </p>
+        </div>
+      </div>
+    </div>
+            
 
-            {/* Chat Container */}
-            <div className="overflow-y-auto pr-4 lg:h-[474px] md:h-[474px] h-[380px]"  >
+           
+            <div className="overflow-y-auto pr-4 lg:h-[400px]  md:h-[474px] h-[380px]"  >
          {   mainmenu&& <Card className="">
       <CardHeader className="flex flex-col items-center gap-4 bg-muted/50 px-6 py-8">
         <Avatar className="h-16 w-16">
           <AvatarImage src="/placeholder-user.jpg" alt="Museum Avatar" />
-          <AvatarFallback>MAI</AvatarFallback>
+          <AvatarFallback>NT</AvatarFallback>
         </Avatar>
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Welcome to the Museum</h2>
+          <h2 className="text-2xl font-bold">Welcome to the NetTro</h2>
           <p className="text-muted-foreground">How can we assist you today?</p>
         </div>
       </CardHeader>
       <CardContent className="grid gap-4 p-6">
+       
         <Link
-          href="#"
-          className="flex items-center gap-4 rounded-md bg-background p-4 transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-          prefetch={false}
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <CompassIcon className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">Explore the Museum</p>
-            <p className="text-sm text-muted-foreground">Discover our exhibits and collections.</p>
-          </div>
-        </Link>
-        <Link
-          href="#"
-          className="flex items-center gap-4 rounded-md bg-background p-4 transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-          prefetch={false}
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <CalendarIcon className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">View Exhibitions</p>
-            <p className="text-sm text-muted-foreground">Check out our current and upcoming exhibitions.</p>
-          </div>
-        </Link>
-        <Link
-        onClick={BookTicket}
+        
           href="#"
           className="flex items-center gap-4 rounded-md bg-background p-4 transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
           prefetch={false}
@@ -330,152 +328,19 @@ else{
             <TicketIcon className="h-6 w-6" />
           </div>
           <div>
-            <p className="font-medium">Book Tickets</p>
-            <p className="text-sm text-muted-foreground">Purchase tickets for your visit.</p>
-          </div>
-        </Link>
-        <Link
-          onClick={StartChat}
-          href={"#"}
-          className="flex items-center gap-4 rounded-md bg-background p-4 transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-          prefetch={false}
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <InfoIcon className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">Get Information</p>
-            <p className="text-sm text-muted-foreground">Find answers to your questions.</p>
+            <p className="font-medium">Analyze Network and Security Issues</p>
+            <p className="text-sm text-muted-foreground">Click Here to see the problems.</p>
           </div>
         </Link>
       </CardContent>
     </Card>}
 
-    {loading1&&<>
-                    <div className="w-full max-w-md mx-auto animate-pulse p-9">
-    <h1 className="h-2 bg-gray-300 rounded-lg w-52 dark:bg-gray-600"></h1>
-
-    <p className="w-48 h-2 mt-6 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-full h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-64 h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-4/5 h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-</div>
-                  </>}
-                  {
-                 openTicket&& ( <div className="max-w-md mx-auto p-6 sm:p-8 md:p-10">
-                  <div className="flex flex-col items-center gap-4 mb-8">
-                    <h1 className="text-3xl font-bold">Book Your Museum Visit</h1>
-                    <p className="text-muted-foreground">Reserve your tickets for an unforgettable experience.</p>
-                  </div>
-                  <form className="space-y-4" onSubmit={handleTicketBook}>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" placeholder="Enter your name" value={name} onChange={handleNameChange} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={handleEmailChange} />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="date">Date of Visit</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start text-left font-normal">
-                              <CalendarDaysIcon className="mr-1 h-4 w-4 -translate-x-1" />
-                              {/* @ts-ignore */}
-                              <span>{date ? date.toLocaleDateString()  : "Select a date"}</span>
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="p-0">
-                          {/* @ts-ignore */}
-                            <Calendar mode="single" selectedy={date} onSelect={handleDateChange} initialFocus />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="tickets">Number of Tickets</Label>
-                        <Select value={tickets} onValueChange={handleTicketsChange}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select number" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">1</SelectItem>
-                            <SelectItem value="2">2</SelectItem>
-                            <SelectItem value="3">3</SelectItem>
-                            <SelectItem value="4">4</SelectItem>
-                            <SelectItem value="5">5</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <Button type="submit" className="w-full">
-                      Book Tickets
-                    </Button>
-                  </form>
-                  <div className="mt-8 text-center">
-                    <p className="text-muted-foreground">Or, chat with our virtual assistant to book your tickets:</p>
-                    <Button variant="outline" className="mt-2 flex items-center gap-2 text-muted-foreground hover:text-primary" onClick={StartChat}>
-                      <MessageCircleDashedIcon className="h-5 w-5" />
-                      <span>Chat with us</span>
-                    </Button>
-                  </div>
-                </div>)
-             }
-             {/* booking confirmation page */}
-             {openConfirmation&&<div className="max-w-md mx-auto p-6 sm:p-8 md:p-10">
-              <div className="flex flex-col items-center gap-4 mb-8">
-                <h1 className="text-3xl font-bold">Confirm Your Booking</h1>
-                <p className="text-muted-foreground">Review your booking details and complete your payment.</p>
-              </div>
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <div className="font-medium">{name&&name}</div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="font-medium">{email&&email}</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="date">Date of Visit</Label>
-                     {/* @ts-ignore */}
-                    <div className="font-medium">{date&&date.toLocaleDateString()}</div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="tickets">Number of Tickets</Label>
-                    <div className="font-medium">{tickets&&tickets}</div>
-                  </div>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <div className="text-muted-foreground">Total</div>
-                  <div className="font-medium text-2xl">₹99.00</div>
-                </div>
-                <Button onClick={PaymentDo} className="w-full" disabled={loading}>
-                  Complete Payment
-                </Button>
-              </div>
-              <div className="mt-8 text-center">
-                <p className="text-muted-foreground">Or, chat with our virtual assistant to complete your booking:</p>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <Button variant="outline" className="flex items-center gap-2 text-muted-foreground hover:text-primary" onClick={StartChat}>
-                    <MessageCircleDashedIcon className="h-5 w-5" />
-                    <span>Chat with us</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-             }
-       { chat.map((item,index)=>(    <div  key={index}>
+   
+                 
+       { chat.map((item,index)=>(    <div className="mt-3" key={index}>
               {/* Chat Message AI */}
              {/* @ts-ignore */}
-             { item.type=="bot" &&(<div className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
+             { item.type=="bot" &&(<div className="flex gap-3 my-4  text-gray-600 text-sm flex-1">
                 <span className="relative flex shrink-0 overflow-hidden rounded-full w-8 h-8">
                   <div className="rounded-full bg-gray-100 border p-1">
                     <svg
@@ -506,7 +371,7 @@ else{
 
               {/* User Chat Message */}
               {/* @ts-ignore */}
-             { item.type=="user"&&(<div className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
+             { item.type=="user"&&(<div className="flex gap-3  text-gray-600 text-sm flex-1">
                 <span className="relative flex shrink-0 overflow-hidden rounded-full w-8 h-8">
                   <div className="rounded-full bg-gray-100 border p-1">
                     <svg
@@ -533,46 +398,40 @@ else{
             </div>
           
 ))}
-{loading&&<>
-                    <div className="w-full max-w-md mx-auto animate-pulse p-9">
-    <h1 className="h-2 bg-gray-300 rounded-lg w-52 dark:bg-gray-600"></h1>
 
-    <p className="w-48 h-2 mt-6 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-full h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-64 h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-    <p className="w-4/5 h-2 mt-4 bg-gray-200 rounded-lg dark:bg-gray-700"></p>
-</div>
-                  </>}
    
 </div>
-            {/* Input Field for User Message */}
-            <div className="flex relative bottom-2 w-full">
-          
+           
+<div className="flex relative top-3 w-full">
   <div className="w-full">
-    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-        <GiArtificialIntelligence className="w-4 h-4 text-gray-500 dark:text-gray-400"/>
+    <div className="absolute inset-y-0 left-0 flex items-center  pl-3 pointer-events-none">
+      <GiArtificialIntelligence className="w-4 h-4 text-gray-500 dark:text-gray-400" />
     </div>
     <input
       type="text"
       id="voice-search"
       onChange={handleChange}
       value={usermessage}
-      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="Enter Your Query ? "
+      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5
+                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+                 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="Enter Your Query..."
       onKeyPress={(e) => e.key === "Enter" && handleSubmit(e)}
     />
-
   </div>
   <button
     onClick={handleSubmit}
-    className="flex py-2.5 px-3 ms-2 text-sm font-medium text-white  border focus:ring-4 focus:outline-none focus:ring-blue-300 absolute right-0 justify-center items-center bg-white"
+    className="flex py-2.5 px-3 ml-2 text-sm font-medium  text-white border
+               focus:ring-4 focus:outline-none focus:ring-blue-300
+               justify-center items-center bg-white"
   >
-     <TbSend className="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"/>
-    
-    
+    <TbSend className="w-5 h-5 text-gray-500  dark:text-gray-400
+                      hover:text-gray-900 dark:hover:text-white" />
   </button>
+</div>
 
-            </div>
+
           </motion.div>
         )}
       </AnimatePresence>
