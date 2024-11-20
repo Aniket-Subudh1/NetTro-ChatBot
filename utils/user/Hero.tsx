@@ -81,7 +81,7 @@ const Hero = () => {
     };
 
     showDialog(); 
-    const interval = setInterval(showDialog, 5*60000); 
+    const interval = setInterval(showDialog, 60000); 
 
     return () => clearInterval(interval);
   }, []);
